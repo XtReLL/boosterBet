@@ -14,7 +14,7 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 let corsOptions = {
-  origin: "http://localhost:8081"
+    origin: "http://localhost:8081"
 };
 
 app.use(passport.initialize()); 
@@ -25,14 +25,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+    res.json({ message: "Welcome to bezkoder application." });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+    console.log(`Server is running on port ${PORT}.`);
 });
 
 // db.sequelize.sync();
 db.sequelize.sync({ force: true }).then(() => {
     console.log("Drop and re-sync db.");
-  });
+});

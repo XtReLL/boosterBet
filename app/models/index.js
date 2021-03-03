@@ -4,8 +4,10 @@ const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
+  port: 5433,
   dialect: dbConfig.dialect,
-  operatorsAliases: false,
+  logging: (...msg) => console.log(msg),
+  
 
   pool: {
     max: dbConfig.pool.max,
@@ -20,6 +22,10 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.tutorials = require("./User.model.js")(sequelize, Sequelize);
+db.user = require("./User.model.js")(sequelize, Sequelize);
+db.alert = require("./Alert.model.js")(sequelize, Sequelize);
+db.item = require("./Item.model.js")(sequelize, Sequelize);
+db.privilege = require("./Privilege.model.js")(sequelize, Sequelize);
+db.authProvider = require("./AuthProvider.model.js")(sequelize, Sequelize);
 
 module.exports = db;

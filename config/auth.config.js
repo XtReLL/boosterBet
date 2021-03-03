@@ -1,5 +1,5 @@
 module.exports = {
   JWT: {
-    JWT_SECRET: ""
+    JWT_SECRET: "123qwerty"
   }
 };

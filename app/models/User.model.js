@@ -27,6 +27,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 0
+        },
+        accessToken: {
+            type: Sequelize.STRING,
+            allowNull: false,
         }
     });
   

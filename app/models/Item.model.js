@@ -1,6 +1,22 @@
 module.exports = (sequelize, Sequelize) => {
     const Item = sequelize.define("item", {
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         market_hash_name: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        market_name: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        appId: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        assetId: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -12,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         classid: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             allowNull: false
         },
         rarity: {

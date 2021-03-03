@@ -44,11 +44,23 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:5000/googleRedirect"
   },
   function(accessToken, refreshToken, profile, done) {
-      //console.log(accessToken, refreshToken, profile)
+      console.log(accessToken, refreshToken, profile)
       console.log("GOOGLE BASED OAUTH VALIDATION GETTING CALLED")
       return done(null, profile)
   }
 ))
+
+passport.use(new SteamStrategy({
+    returnURL: 'http://localhost:5000/steamRedirect',
+    realm: 'http://localhost:5000/',
+    apiKey: 'A09C0259814870DD089354F95D2F4E09'
+  },
+  function(identifier, profile, done) {
+    User.findByOpenID({ openId: identifier }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
 
 // These functions are required for getting data To/from JSON returned from Providers
 passport.serializeUser(function(user, done) {
