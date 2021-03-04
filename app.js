@@ -3,9 +3,11 @@ const db = require("./app/models");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
+
+const initRole = require('./app/controllers/role.controller');
+
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -35,4 +37,5 @@ app.listen(PORT, () => {
 // db.sequelize.sync();
 db.sequelize.sync({ force: true }).then(() => {
     console.log("Drop and re-sync db.");
+    initRole();
 });

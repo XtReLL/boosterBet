@@ -1,13 +1,14 @@
 const authConfig = require("../../config/auth.config.js");
 
-const JWT_SECRET = authConfig.JWT.JWT_SECRET
-
-const getJWTFromRequest = function(req) {
-    let token = null;
-    if (req && req.cookies){
-        token = req.cookies['jwt']
+let opts = {
+    secretOrKey: authConfig.JWT.JWT_SECRET,
+    jwtFromRequest: function(req) {
+        let token = null;
+        if (req && req.cookies){
+            token = req.cookies['jwt']
+        }
+        return token
     }
-    return token
 }
 
 const findOrCreate = function(user){

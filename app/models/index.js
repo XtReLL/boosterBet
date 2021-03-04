@@ -6,7 +6,6 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   port: 5433,
   dialect: dbConfig.dialect,
-  logging: (...msg) => console.log(msg),
   
 
   pool: {
@@ -25,7 +24,18 @@ db.sequelize = sequelize;
 db.user = require("./User.model.js")(sequelize, Sequelize);
 db.alert = require("./Alert.model.js")(sequelize, Sequelize);
 db.item = require("./Item.model.js")(sequelize, Sequelize);
-db.privilege = require("./Privilege.model.js")(sequelize, Sequelize);
+db.role = require("./Role.model.js")(sequelize, Sequelize);
 db.authProvider = require("./AuthProvider.model.js")(sequelize, Sequelize);
+
+db.role.belongsToMany(db.user, {
+  through: "user_roles",
+  foreignKey: "roleId",
+  otherKey: "userId"
+});
+db.user.belongsToMany(db.role, {
+  through: "user_roles",
+  foreignKey: "userId",
+  otherKey: "roleId"
+});
 
 module.exports = db;
