@@ -1,74 +1,122 @@
-const authConfig = require("../../config/auth.config.js");
+const db = require("../models");
+const config = require("../../config/auth.config");
+const User = db.user;
+const Role = db.role;
 
-let opts = {
-    secretOrKey: authConfig.JWT.JWT_SECRET,
-    jwtFromRequest: function(req) {
-        let token = null;
-        if (req && req.cookies){
-            token = req.cookies['jwt']
-        }
-        return token
-    }
-}
+const Op = db.Sequelize.Op;
 
-const findOrCreate = function(user){
-    if(checkUser(user)){  
-        return user
-    }else{
-         // else create a new user
-    }
-}
-const checkUser = function(input){
-    for (let i in DATA) {
-        if(input.email==DATA[i].email && (input.password==DATA[i].password || DATA[i].provider==input.provider))
-            return true // found
-        else
-            return null //console.log('no match')
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const authConfig = require("../../config/auth.config");
+
+exports.signup = (req, res) => {
+  // Save User to Database
+  User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8)
+  })
+    .then(user => {
+      if (req.body.roles) {
+        Role.findAll({
+          where: {
+            name: {
+              [Op.or]: req.body.roles
+            }
+          }
+        }).then(roles => {
+          user.setRoles(roles).then(() => {
+            res.send({ message: "User was registered successfully!" });
+          });
+        });
+      } else {
+        // user role = 1
+        user.setRoles([1]).then(() => {
+          res.send({ message: "User was registered successfully!" });
+        });
       }
-    return false // not found
-}
-
-// main authentication, our app will rely on it
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    console.log("JWT BASED AUTH GETTING CALLED") // called everytime a protected URL is being served
-    if (CheckUser(jwt_payload.data)) {
-        return done(null, jwt_payload.data)
-    } else {
-        // user account doesnt exists in the DATA
-        return done(null, false)
-    }
-}))
-
-passport.use(new GoogleStrategy({
-    clientID: "1038574997890-0mpugpgh22cb956t160seko9cn4uo41c.apps.googleusercontent.com",
-    clientSecret: "NROxRNWUxJZmkar_YNYa--Fu",
-    callbackURL: "http://localhost:5000/googleRedirect"
-  },
-  function(accessToken, refreshToken, profile, done) {
-      console.log(accessToken, refreshToken, profile)
-      console.log("GOOGLE BASED OAUTH VALIDATION GETTING CALLED")
-      return done(null, profile)
-  }
-))
-
-passport.use(new SteamStrategy({
-    returnURL: 'http://localhost:5000/steamRedirect',
-    realm: 'http://localhost:5000/',
-    apiKey: 'A09C0259814870DD089354F95D2F4E09'
-  },
-  function(identifier, profile, done) {
-    User.findByOpenID({ openId: identifier }, function (err, user) {
-      return done(err, user);
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
     });
-  }
-));
+};
 
-// These functions are required for getting data To/from JSON returned from Providers
-passport.serializeUser(function(user, done) {
-    console.log('I should have jack ')
-    done(null, user)
-})
-passport.deserializeUser(function(obj, done) {
-    console.log('I wont have jack shit')
-    done(null, obj)
-})
+exports.signin = (req, res) => {
+  User.findOne({
+    where: {
+      username: req.body.username
+    }
+  })
+    .then(user => {
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
+
+      var passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+
+      if (!passwordIsValid) {
+        return res.status(401).send({
+          accessToken: null,
+          message: "Invalid Password!"
+        });
+      }
+
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+      });
+
+      var authorities = [];
+      user.getRoles().then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+        }
+        res.status(200).send({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          roles: authorities,
+          accessToken: token
+        });
+      });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+// passport.use(new GoogleStrategy({
+//     clientID: authConfig.google.clientID,
+//     clientSecret: authConfig.google.clientSecret,
+//     callbackURL: authConfig.google.callbackURL
+//   },
+//   function(accessToken, refreshToken, profile, done) {
+//       console.log(accessToken, refreshToken, profile)
+//       console.log("GOOGLE BASED OAUTH VALIDATION GETTING CALLED")
+//       return done(null, profile)
+//   }
+// ))
+
+// passport.use(new SteamStrategy({
+//     returnURL: authConfig.steam.returnURL,
+//     realm: authConfig.steam.realm,
+//     apiKey: authConfig.steam.apiKey
+//   },
+//   function(identifier, profile, done) {
+//     User.findByOpenID({ openId: identifier }, function (err, user) {
+//       return done(err, user);
+//     });
+//   }
+// ));
+
+// // These functions are required for getting data To/from JSON returned from Providers
+// passport.serializeUser(function(user, done) {
+//     console.log('I should have jack ')
+//     done(null, user)
+// })
+// passport.deserializeUser(function(obj, done) {
+//     console.log('I wont have jack shit')
+//     done(null, obj)
+// })

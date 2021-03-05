@@ -8,11 +8,12 @@ const initRole = require('./app/controllers/role.controller');
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
+
+require('./app/routes/auth.routes')(app);
+require('./app/routes/user.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 let corsOptions = {
@@ -24,11 +25,6 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to bezkoder application." });
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
