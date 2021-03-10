@@ -4,7 +4,8 @@
   "description": "boosterBetBackend",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
   },
   "keywords": [
     "backend"
@@ -12,17 +13,26 @@
   "author": "XtReLL",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "hexa.one": "^1.1.2",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "node-2fa": "^2.0.1",
+    "node-cache": "^5.1.2",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-steam": "^1.0.15",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

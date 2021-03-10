@@ -1,53 +1,36 @@
 module.exports = (sequelize, Sequelize) => {
     const Item = sequelize.define("item", {
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
         market_hash_name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        market_name: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         appId: {
-            type: Sequelize.INTEGER,
-            allowNull: false
+            type: Sequelize.INTEGER
         },
         assetId: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         image: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         exterior: {
             type: Sequelize.STRING
         },
         classid: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         rarity: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         color: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
         },
         is_stattrak: {
             type: Sequelize.INTEGER,
-            allowNull: false,
             defaultValue: 0
         },
         price: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
+            type: Sequelize.DOUBLE,
+            defaultValue: 0.00
         },
     });
   

@@ -2,9 +2,11 @@ module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         username: {
             type: Sequelize.STRING,
+            defaultValue: null
         },
         email: {
             type: Sequelize.STRING,
+            defaultValue: null
         },
         password: {
             type: Sequelize.STRING,
@@ -20,13 +22,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         balance: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-        },
-        accessToken: {
-            type: Sequelize.STRING,
-            allowNull: false,
+            type: Sequelize.INTEGER
         }
     });
   

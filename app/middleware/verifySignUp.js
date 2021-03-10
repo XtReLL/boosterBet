@@ -13,6 +13,7 @@ Role.findAll({raw:true}).then(role => {
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
   // Username
+  console.log(req.body);
   User.findOne({
     where: {
       username: req.body.username
